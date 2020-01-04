@@ -7,7 +7,7 @@ const app = express();
 
 //set directory where application views can be found - as per pre-created folder structure
 //Since app is already in /src don't need to reinclude src
-console.log("dirname is",__dirname);
+//console.log("dirname is",__dirname);
 app.set('views', path.join(__dirname, '/views'));
 app.set('view engine', 'ejs'); //embedded javascript engine
 
