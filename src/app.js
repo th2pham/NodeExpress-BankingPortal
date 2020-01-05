@@ -6,6 +6,11 @@ const express = require("express");
 const app = express();
 const {accounts, users, writeJSON} = require('./data');
 
+//When having single element, can change name reference like this
+//When export as object {x,y,z}, then can rename during import {x: new-x, y: new-y...} 
+const accountRoutes = require('./routes/accounts.js');
+const servicesRoutes = require('./routes/services.js');
+
 //set directory where application views can be found - as per pre-created folder structure
 //Since app is already in /src don't need to reinclude src
 //console.log("dirname is",__dirname);
@@ -47,74 +52,80 @@ app.get("/profile", (req, res) => {
   res.render("profile", { user: users[0] });
 });
 
-app.get("/savings", (req, res) => {
-  //be careful with exact "account" spelling here because it's used by ejs for rendering !
-  res.render("account", { account: accounts.savings });
-});
+// replace with accountRoutes
+// app.get("/savings", (req, res) => {
+//   //be careful with exact "account" spelling here because it's used by ejs for rendering !
+//   res.render("account", { account: accounts.savings });
+// });
 
-app.get("/checking", (req, res) => {
-  res.render("account", { account: accounts.checking });
-});
+// app.get("/checking", (req, res) => {
+//   res.render("account", { account: accounts.checking });
+// });
 
-app.get("/credit", (req, res) => {
-  res.render("account", { account: accounts.credit });
-});
+// app.get("/credit", (req, res) => {
+//   res.render("account", { account: accounts.credit });
+// });
 
-app.get("/transfer", (req, res) => {
-  res.render("transfer");
-});
+app.use("/account", accountRoutes);
 
-app.post("/transfer", (req, res) => {
-  const data = req.body;
-  //Todo: check for negative, good data, etc.. ?  For the time being, short cut !
-  accounts[data.from].balance -= Number(data.amount);
-  accounts[data.to].balance += parseInt(data.amount, 10);  //Number doesn't work, trouble shoot later
+//Replaced by servicesRoutes
+// app.get("/transfer", (req, res) => {
+//   res.render("transfer");
+// });
 
-  // //If we need to break down into 2 steps as per instructions, it'd look like
-  // let tmpNewBalance = accounts[data.from].balance;
-  // // After some checkings, update tmpNewBalance
-  // tmpNewBalance -= data.amount;
-  // // Set new balance for FROM acct
-  // accounts[data.from].balance = tmpNewBalance;
-  // //repeat for ...TO
+// app.post("/transfer", (req, res) => {
+//   const data = req.body;
+//   //Todo: check for negative, good data, etc.. ?  For the time being, short cut !
+//   accounts[data.from].balance -= Number(data.amount);
+//   accounts[data.to].balance += parseInt(data.amount, 10);  //Number doesn't work, trouble shoot later
 
-  // let accountsJSON = JSON.stringify(accounts);
-  // fs.writeFileSync(
-  //   path.join(__dirname, "json", "accounts.json"),
-  //   accountsJSON,
-  //   "UTF8"
-  // );
-  writeJSON();
+//   // //If we need to break down into 2 steps as per instructions, it'd look like
+//   // let tmpNewBalance = accounts[data.from].balance;
+//   // // After some checkings, update tmpNewBalance
+//   // tmpNewBalance -= data.amount;
+//   // // Set new balance for FROM acct
+//   // accounts[data.from].balance = tmpNewBalance;
+//   // //repeat for ...TO
 
-  res.render("transfer", { message: "Transfer Completed" });
-});
+//   // let accountsJSON = JSON.stringify(accounts);
+//   // fs.writeFileSync(
+//   //   path.join(__dirname, "json", "accounts.json"),
+//   //   accountsJSON,
+//   //   "UTF8"
+//   // );
+//   writeJSON();
 
-
-
-app.get("/payment", (req, res) => {
-  res.render("payment", {account: accounts.credit});
-});
-
-app.post("/payment", (req, res) => {
-  const data = req.body;
-  //Todo: check for negative, good data, etc.. ?  For the time being, short cut !
-  accounts["credit"].balance -= parseInt(data.amount, 10);
-  accounts["credit"].available += parseInt(data.amount, 10);
-
-  //Course suggests to use parseInt(), wouldn't this round it off ?
-
-  // let accountsJSON = JSON.stringify(accounts);
-  // fs.writeFileSync(
-  //   path.join(__dirname, "json", "accounts.json"),
-  //   accountsJSON,
-  //   "UTF8"
-  // );
-
-  writeJSON();
+//   res.render("transfer", { message: "Transfer Completed" });
+// });
 
 
-  res.render("payment", { message: "Payment Successful", account: accounts.credit });
-});
+
+// app.get("/payment", (req, res) => {
+//   res.render("payment", {account: accounts.credit});
+// });
+
+// app.post("/payment", (req, res) => {
+//   const data = req.body;
+//   //Todo: check for negative, good data, etc.. ?  For the time being, short cut !
+//   accounts["credit"].balance -= parseInt(data.amount, 10);
+//   accounts["credit"].available += parseInt(data.amount, 10);
+
+//   //Course suggests to use parseInt(), wouldn't this round it off ?
+
+//   // let accountsJSON = JSON.stringify(accounts);
+//   // fs.writeFileSync(
+//   //   path.join(__dirname, "json", "accounts.json"),
+//   //   accountsJSON,
+//   //   "UTF8"
+//   // );
+
+//   writeJSON();
+
+
+//   res.render("payment", { message: "Payment Successful", account: accounts.credit });
+// });
+
+app.use("/services",servicesRoutes)
 
 
 let port = process.env.PORT || 3000;
