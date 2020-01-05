@@ -4,6 +4,7 @@ const path = require("path");
 const express = require("express");
 
 const app = express();
+const {accounts, users, writeJSON} = require('./data');
 
 //set directory where application views can be found - as per pre-created folder structure
 //Since app is already in /src don't need to reinclude src
@@ -20,17 +21,17 @@ app.use(express.urlencoded({ extended: true }));
 
 // const accountData = fs.readFileSync('./src/json/accounts.json', "UTF8");
 // better practice to fully specify the path and file format
-const accountData = fs.readFileSync(
-  path.join(__dirname, "json", "accounts.json"),
-  "UTF8"
-);
-const accounts = JSON.parse(accountData);
+// const accountData = fs.readFileSync(
+//   path.join(__dirname, "json", "accounts.json"),
+//   "UTF8"
+// );
+// const accounts = JSON.parse(accountData);
 
-const userData = fs.readFileSync(
-  path.join(__dirname, "json", "users.json"),
-  "UTF8"
-);
-const users = JSON.parse(userData);
+// const userData = fs.readFileSync(
+//   path.join(__dirname, "json", "users.json"),
+//   "UTF8"
+// );
+// const users = JSON.parse(userData);
 
 //console.log(accounts);
 
@@ -77,12 +78,13 @@ app.post("/transfer", (req, res) => {
   // accounts[data.from].balance = tmpNewBalance;
   // //repeat for ...TO
 
-  let accountsJSON = JSON.stringify(accounts);
-  fs.writeFileSync(
-    path.join(__dirname, "json", "accounts.json"),
-    accountsJSON,
-    "UTF8"
-  );
+  // let accountsJSON = JSON.stringify(accounts);
+  // fs.writeFileSync(
+  //   path.join(__dirname, "json", "accounts.json"),
+  //   accountsJSON,
+  //   "UTF8"
+  // );
+  writeJSON();
 
   res.render("transfer", { message: "Transfer Completed" });
 });
@@ -101,12 +103,15 @@ app.post("/payment", (req, res) => {
 
   //Course suggests to use parseInt(), wouldn't this round it off ?
 
-  let accountsJSON = JSON.stringify(accounts);
-  fs.writeFileSync(
-    path.join(__dirname, "json", "accounts.json"),
-    accountsJSON,
-    "UTF8"
-  );
+  // let accountsJSON = JSON.stringify(accounts);
+  // fs.writeFileSync(
+  //   path.join(__dirname, "json", "accounts.json"),
+  //   accountsJSON,
+  //   "UTF8"
+  // );
+
+  writeJSON();
+
 
   res.render("payment", { message: "Payment Successful", account: accounts.credit });
 });

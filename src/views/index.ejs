@@ -10,6 +10,7 @@
 <%- include('summary', { account: accounts.checking }) %>
 <%- include('summary', { account: accounts.credit }) %>
 <br>
+<!-- The /profile above and /transfer are handled by express BE as well when invoked-->
 <a href="/transfer">Transfer</a>
 
 <%- include('footer'); %>
